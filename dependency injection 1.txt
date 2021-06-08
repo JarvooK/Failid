@@ -1,0 +1,33 @@
+
+
+Dependencye Injection.
+
+1. Dependency Injection (DI) on tarkvara kujundusmuster, mis võimaldab meil arendada vabalt ühendatud koodi. ... Sõltuvuse süstimise muster kasutab objektide initsialiseerimiseks ehitajaobjekti ja annab objektile nõutavad sõltuvused, mis tähendab, et see võimaldab teil "süstida" sõltuvust väljastpoolt klassi.
+2.Läbi  client class constructor.
+3. using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+
+namespace DependencyInjection.Example
+{
+    public class Worker : BackgroundService
+    {
+        private readonly IMessageWriter _messageWriter;
+
+        public Worker(IMessageWriter messageWriter) =>
+            _messageWriter = messageWriter;
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _messageWriter.Write($"Worker running at: {DateTimeOffset.Now}");
+                await Task.Delay(1000, stoppingToken);
+            }
+        }
+    }
+}
+4. AddSingleton. Üksikud teenused luuakse esmakordsel taotlemisel (või kui käivitatakse ConfigureServices, kui määrate seal eksemplari) ja seejärel kasutatakse igas järgmises taotluses sama eksemplari.
+5.AddTransient. Ajutised teenused luuakse iga kord, kui neid taotletakse. See eluiga sobib kõige paremini kergete kodakondsuseta teenuste jaoks. 
+6.Scoped eluaegsed teenused luuakse üks kord taotluse kohta. AddSingleton. Üksikud teenused luuakse esmakordsel taotlemisel (või kui käivitatakse ConfigureServices, kui määrate seal eksemplari) ja seejärel kasutatakse igas järgmises taotluses sama eksemplari.
